@@ -1,0 +1,8 @@
+$TTL 24h
+;( Serial Refresh Retry Expire Negative Cache TTL)
+@       IN SOA {{ bind_etc_bind_name }}. {{ bind_etc_bind_hostmaster }}. (
+                  2003052800  86400  300  604800  3600 )
+
+@       IN      NS   {{ bind_etc_bind_name }}.
+@       IN      A    0.0.0.0
+*       IN      A    0.0.0.0

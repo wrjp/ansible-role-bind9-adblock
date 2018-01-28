@@ -1,0 +1,6 @@
+{% for blocked in stevenblackhosts_content %}
+zone "{{ blocked }}" {
+  type master; 
+  file "/etc/bind/db.blocked";
+};
+{% endfor %}

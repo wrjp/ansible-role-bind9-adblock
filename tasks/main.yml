@@ -1,0 +1,44 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+# ansible_become: yes
+
+
+
+- name: Install bind9
+  apt: pkg=bind9 state=present update_cache=yes
+  become: yes
+  tags: bind9
+
+
+- import_tasks: compile_blocked_domains.yml
+
+- name: Configure bind and block ad-domains
+  template: 
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}" 
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - src: etc/bind/named.conf.options.j2
+      dest: /etc/bind/named.conf.options
+    - src: etc/bind/db.blocked.j2
+      dest: /etc/bind/db.blocked
+    - src: etc/bind/named.conf.blocked.j2
+      dest: /etc/bind/named.conf.blocked
+  tags: bind9
+  notify: restart bind9
+
+- name: Add block domains to main bind config
+  lineinfile:
+    path: /etc/bind/named.conf
+    regexp: 'blocked";$'
+    line: 'include "/etc/bind/named.conf.blocked";'
+    insertafter: EOF
+    state: present
+
+- name: Start the bind9 service
+  service: name=bind9 state=started enabled=yes
+  become: yes
+  tags: bind9
+

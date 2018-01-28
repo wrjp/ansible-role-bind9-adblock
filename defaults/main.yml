@@ -1,0 +1,10 @@
+#name of your local nameserver which your are configuring
+bind_etc_bind_name: server.example.org
+#hostmaster email with @ replaced by '.' 
+bind_etc_bind_hostmaster: hostmaster.example.org
+bind_etc_named_conf_options_forwarders:
+  - 8.8.8.8
+  - 8.8.4.4
+bind_etc_named_conf_blocked:
+  - 005.free-counter.co.uk
+  - 006.free-counter.co.uk

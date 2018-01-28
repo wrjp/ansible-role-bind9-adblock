@@ -1,0 +1,28 @@
+---
+
+- set_fact:
+    stevenblack_file:  "StevenBlack-hosts"
+    blacklist: "{{ lookup('file', 'local-blacklist').splitlines() | list }}" 
+    whitelist: "{{ lookup('file', 'local-whitelist').splitlines() }}"
+
+
+- name: Composing blocked domainlist - this might take a little
+  set_fact:
+    stevenblackhosts_content: "{{ lookup('file', 'steven_black_hosts').splitlines() 
+| union(blacklist)
+| select('match', '^0') 
+| reject('match', '.*127\\.0\\.0\\.1.*') 
+| reject('match', '.*255\\.255\\.255\\.255.*')
+| reject('match', '.*::1.*')
+| map('regex_replace', '0\\.0\\.0\\.0 ','') 
+| sort
+| unique
+| difference(whitelist)
+| list }}"
+
+#- debug: msg="{{ item }}" 
+#  with_items: "{{ stevenblackhosts_content }}"
+ 
+      
+
+
